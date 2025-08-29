@@ -1,9 +1,9 @@
-from fastapi import APIROUTER, HTTEXception
+from fastapi import APIRouter, HTTPException
 from .services import get_dashboard_data
 from .cache import get_cached_data, set_cached_data
 from .models import DashboardData
 
-router = APIROUTER()
+router = APIRouter()
 
 @router.get(" /clusters/{cluster_id}", response_model= DashboardData)
 async def get_cluster_dashboard(cluster_id:str):
