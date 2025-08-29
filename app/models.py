@@ -15,7 +15,7 @@ class Job(BaseModel):
 class ClusterInfo(BaseModel):
     cluster_id: str
     name: str
-    user: str
+    user: Optional[str] = None
     status: str
     total_nodes: int
     available_nodes: int
