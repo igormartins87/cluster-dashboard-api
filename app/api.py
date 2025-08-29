@@ -5,7 +5,7 @@ from .models import DashboardData
 
 router = APIRouter()
 
-@router.get(" /clusters/{cluster_id}", response_model= DashboardData)
+@router.get("/clusters/{cluster_id}", response_model= DashboardData)
 async def get_cluster_dashboard(cluster_id:str):
     # EndPoint principal para obter dados do dashboard
     cache_Key = f"cluster_dashboard:{cluster_id}"
@@ -22,7 +22,7 @@ async def get_cluster_dashboard(cluster_id:str):
 
     return dashboard_data
 
-@router.get(" /clusters/{cluster_id}/info")
+@router.get("/clusters/{cluster_id}/info")
 async def get_cluster_dashboard(cluster_id:str):
     # EndPoint apenas para informações do cluster (cache mais limpo)
     cache_Key = f"cluster_info:{cluster_id}"
@@ -38,7 +38,7 @@ async def get_cluster_dashboard(cluster_id:str):
 
     return cluster_info
 
-@router.get(" /health")
+@router.get("/health")
 async def healh_check():
     return{"status": "healthy", "message": "API is running"}
 
