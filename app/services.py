@@ -43,7 +43,7 @@ def generate_mock_jobs(cluster_id ,count=20):
     for i in range(count):
         job_id = f"{cluster_id}_job{i+1}"
         status=random.choice(statuses)
-        runtime= f"{random.randint(1, 48)} : {random.randint(0,59):02d} : {random.randint(0, 59):0 2d}"
+        runtime= f"{random.randint(1, 48)} : {random.randint(0,59):02d} : {random.randint(0,59):02d}"
         queue_time = f"{random.randint(0, 24):02d} : {random.randint(0, 59):02d}"
 
         jobs.append(Job(
@@ -89,6 +89,7 @@ def get_dashboard_data(cluster_id:str) -> DashboardData:
     metrics = generate_mock_metrics(cluster_id)
 
     return DashboardData(
+        cluster_id=cluster_id,
         cluster_info=cluster_info,
         jobs=jobs,
         metrics=metrics
