@@ -30,8 +30,9 @@ class Metrics(BaseModel):
     last_update: datetime
 
 class DashboardData(BaseModel):
-    cluster_id: ClusterInfo
-    Job: List[Job]
+    cluster_id: str
+    cluster_info: ClusterInfo
+    jobs: List[Job]
     metrics: Metrics
 
 
