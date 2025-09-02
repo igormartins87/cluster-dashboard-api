@@ -4,7 +4,7 @@ from .models import ClusterInfo, Job, Metrics, DashboardData
 
 
 CLUSTER_MOCK = {
-    "Cluster_a": ClusterInfo(
+    "cluster_a": ClusterInfo(
     cluster_id="cluster_a",
     name ="Cluster_Alpha",
     status= "active",
@@ -14,7 +14,7 @@ CLUSTER_MOCK = {
     icon="🧪"
     ),
 
-    "Cluster_b": ClusterInfo(
+    "cluster_b": ClusterInfo(
     cluster_id="cluster_b",
     name="Cluster_Beta",
     status= "active",
@@ -24,7 +24,7 @@ CLUSTER_MOCK = {
     icon="🚀"
     ),
 
-    "Cluster_c": ClusterInfo(
+    "cluster_c": ClusterInfo(
     cluster_id="cluster_c",
     name="Cluster_gamma",
     status= "maintenance",
@@ -73,7 +73,7 @@ def generate_mock_metrics(cluster_id):
 
 def get_dashboard_data(cluster_id:str) -> DashboardData:
     #Obtem todos os dados para o dash de um cluster especifico
-    cluster_info = CLUSTER_MOCK.get(cluster_id)
+    cluster_info = CLUSTER_MOCK.get(cluster_id.lower())
 
     if not cluster_info:
         cluster_info = ClusterInfo(
