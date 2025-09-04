@@ -58,6 +58,22 @@ def main():
 
         #Metrica
 
+        st.subheader("Métricas")
+        metrics = (data['metrics'])
+        col1, col2, col3 =st.columns(3)
+
+        with col1:
+            st.metric("Lazy Workers", metrics['lazy_workers'])
+        with col2:
+            st.metric("Pending Jobs", metrics['pending_jobs'])
+        with col3:
+             st.metric("Completed Jobs", metrics['completed_jobs'])
+if __name__ == "__main__":
+    main()
+
+
+
+
 
 
 
