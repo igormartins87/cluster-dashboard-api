@@ -6,32 +6,8 @@ st.set_page_config(page_title="Cluster Dashboard", layout="wide")
 
 API_BASE_URL = "http://localhost:8000/api/v1"
 
-def main():
-    st.title("Cluster Dashboard")
 
-    #sidebar para seleção dos cluster
-    cluster_id = st.sidebar.selectbox(
-        "Selecione o Cluster:"
-        ["cluster_a","cluster_b","cluster_c"]
-    )
-
-    #botão para atualizar dados
-    if st.sidebar.button("Atualizar Dados"):
-        st.run()
-
-    try:
-        response = requests.get(f"{API_BASE_URL}/clusters/{cluster_id}")
-
-        if response.status_code == 200:
-            data = response.json()
-            display_cluster_dashboard(data, cluster_id)
-        else:
-
-            st.error(f"Error: {response.status_code}")
-    except requests. exceptions.ConnectionError:
-        st.error("API não está rodando. Execute uvicorn")
-
-    def display_cluster_dashboard(data, cluster_id):
+def display_cluster_dashboard(data, cluster_id):
         #Exibir os dados do dashbard
 
         #Informação do Cluster
@@ -68,6 +44,33 @@ def main():
             st.metric("Pending Jobs", metrics['pending_jobs'])
         with col3:
              st.metric("Completed Jobs", metrics['completed_jobs'])
+
+def main():
+    st.title("Cluster Dashboard")
+
+    #sidebar para seleção dos cluster
+    cluster_id = st.sidebar.selectbox(
+        "Selecione o Cluster:",
+        ["cluster_a","cluster_b","cluster_c"]
+    )
+
+    #botão para atualizar dados
+    if st.sidebar.button("Atualizar Dados"):
+        st.rerun()
+
+    try:
+        response = requests.get(f"{API_BASE_URL}/clusters/{cluster_id}")
+
+        if response.status_code == 200:
+            data = response.json()
+            display_cluster_dashboard(data, cluster_id)
+        else:
+
+            st.error(f"Error: {response.status_code}")
+    except requests. exceptions.ConnectionError:
+        st.error("API não está rodando. Execute uvicorn")
+
+
 if __name__ == "__main__":
     main()
 
