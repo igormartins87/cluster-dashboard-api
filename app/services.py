@@ -47,6 +47,7 @@ def generate_mock_jobs(cluster_id ,count=20):
         queue_time = f"{random.randint(0, 24):02d} : {random.randint(0, 59):02d}"
 
         jobs.append(Job(
+            cluster_id=cluster_id,
             job_id=job_id,
             name=f"job{i+1}",
             user=random.choice(users),
