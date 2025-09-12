@@ -10,6 +10,9 @@ API_BASE_URL = "http://localhost:8000/api/v1"
 def display_cluster_dashboard(data, cluster_id):
         #Exibir os dados do dashbard
 
+        # st.write("Estrutura completa dos dados:",data)
+        # st.write("Métricas recebidas:",data['metrics'])
+
         #Informação do Cluster
         cluster_info = data['cluster_info']
         col1, col2, col3 =st.columns(3)
