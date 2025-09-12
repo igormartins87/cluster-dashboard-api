@@ -5,12 +5,13 @@ from datetime import datetime
 class Job(BaseModel):
     job_id: str
     name: str
-    user: str
+    user: Optional[str] = None
     status: str
     partition: str
     nodes: int
     rumtime: str
     queue_time: str
+    cluster_id:str
 
 class ClusterInfo(BaseModel):
     cluster_id: str
