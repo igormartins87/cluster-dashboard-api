@@ -1,12 +1,19 @@
-from fastapi import APIRouter, HTTPException
-from .services import get_dashboard_data
+from fastapi import APIRouter, HTTPException, Depends, Request
+from .security import validate_api_key, log_security_event, limiter
+from .services import get_dashboard_data, CLUSTER_MOCK
 from .cache import get_cached_data, set_cached_data
-from .models import DashboardData
+from .models import DashboardData, ClusterInfo, Job
+from slowapi.errors import RateLimitExceeded
 
 router = APIRouter()
 
 @router.get("/clusters/{cluster_id}", response_model= DashboardData)
-async def get_cluster_dashboard(cluster_id:str):
+@limiter.limit("10/minute")
+async def get_cluster_dashboard(
+    request: Request,
+    cluster_id: str,
+    api_Key: str = Depends(validate_api_key)
+):
     # EndPoint principal para obter dados do dashboard
     # cache_Key = f"cluster_dashboard:{cluster_id}"
     # cached_data = get_cached_data(cache_Key)
@@ -16,14 +23,24 @@ async def get_cluster_dashboard(cluster_id:str):
 
     # Se não tiver cached, busca dados
 
-    dashboard_data = get_dashboard_data(cluster_id)
+    try:
+        dashboard_data = get_dashboard_data(cluster_id)
+        return dashboard_data
     #armazena no cache(ttl de 30 segundos)
     # set_cached_data(cache_Key, dashboard_data.dict(), ttl_seconds=30)
 
-    return dashboard_data
+    except Exception as e:
+        log_security_event("ACESS ERROR", f"Cluster {cluster_id} - {str(e)}")
+        raise HTTPException(500, "Internal server error")
 
-@router.get("/clusters/{cluster_id}/info")
-async def get_cluster_dashboard(cluster_id:str):
+
+
+@router.get("/clusters/{cluster_id}/info" ,response_model=ClusterInfo)
+async def get_cluster_info(
+    cluster_id: str,
+    api_key:str =Depends(validate_api_key)
+):
+
     # EndPoint apenas para informações do cluster (cache mais limpo)
     # cache_Key = f"cluster_info:{cluster_id}"
     # cached_data = get_cached_data(cache_Key)
@@ -31,8 +48,11 @@ async def get_cluster_dashboard(cluster_id:str):
     # if cached_data:
     #     return cached_data
 
-    dashboard_data = get_dashboard_data(cluster_id)
-    cluster_info =dashboard_data.cluster_info.dict()
+    cluster_info = CLUSTER_MOCK.get(cluster_id)
+
+    if not cluster_info:
+        log_security_event("UNAUTHORIZED_ACESS", f"Cluster não encontrado: {cluster_id}")
+        raise HTTPException(status_code=404,detail="Cluster not found")
     #armazena no cache(ttl de 30 segundos)
     # set_cached_data(cache_Key, cluster_info, ttl_seconds=3600) # 1 hora
 
