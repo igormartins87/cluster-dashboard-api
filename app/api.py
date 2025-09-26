@@ -7,6 +7,28 @@ from slowapi.errors import RateLimitExceeded
 
 router = APIRouter()
 
+@router.exception.handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    log_security_event("RATE_LIMIT_EXCEEDED", f"IP: {request.client.host}")
+    return {
+        "detail" :"Rate limit exceeded",
+        "retry_after": f"{exc.retry_after} seconds"
+    },429
+
+@router.get("/test-auth")
+@limiter.limit("5/minute")
+async def test_auth_endpoint(
+    request: Request,
+    api_Key: str = Depends(validate_api_key)
+):
+    return {
+        "message": "Authenticated sucessfully",
+        "user_type": user_type,
+        "rate_limit": "5 requests per minut"
+    }
+
+
+
 @router.get("/clusters/{cluster_id}", response_model= DashboardData)
 @limiter.limit("10/minute")
 async def get_cluster_dashboard(
@@ -25,13 +47,12 @@ async def get_cluster_dashboard(
 
     try:
         dashboard_data = get_dashboard_data(cluster_id)
-        return dashboard_data
-    #armazena no cache(ttl de 30 segundos)
-    # set_cached_data(cache_Key, dashboard_data.dict(), ttl_seconds=30)
+        log_security_event("CLUSTER_ACESS", f"User {user_type} acessed cluster {cluster_id}")
 
+        return dashboard_data
     except Exception as e:
-        log_security_event("ACESS ERROR", f"Cluster {cluster_id} - {str(e)}")
-        raise HTTPException(500, "Internal server error")
+        log_security_event("CLUSTER_ACESS", f"User {user_type} acessed cluster {cluster_id}")
+
 
 
 
