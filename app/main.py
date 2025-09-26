@@ -23,7 +23,7 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_host=["localhost" ,"127.0.0.1"]
+    allowed_hosts=["localhost" ,"127.0.0.1"]
 )
 
 app.state.limiter = limiter
